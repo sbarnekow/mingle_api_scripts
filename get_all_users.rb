@@ -28,10 +28,6 @@ def http_get(url, options={})
 
     response = http.request(request)
 
-    all_projects = response.body
-
-    puts all_projects
-
     if response.code.to_i > 300
       raise UnexpectedResponseError, <<-ERROR
       \nRequest URL: #{url}

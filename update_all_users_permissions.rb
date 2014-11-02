@@ -20,8 +20,6 @@ def http_get(url, keys={})
     end
 
     request = Net::HTTP::Get.new(uri.request_uri)
-    response = http.request(request)
-    all_projects = response.body
 
     if keys[:access_key_id]
       ApiAuth.sign!(request, keys[:access_key_id], keys[:access_secret_key])
@@ -93,16 +91,6 @@ def http_put(user_array)
     return response
   end
 end
-
-# def update_each_user(user_arr, current_user_id)
-#     user_arr.delete_if{|x| x == current_user_id}
-#     user_arr.each do |user|
-#       url = 'https://sarahh.mingle-api.thoughtworks.com/api/v2/users/' + user + '.xml'
-#       keys = {:access_key_id => 'admin', :access_secret_key => 'kRSr/Tv++vQDWyrwh8eGJLS3JvSFDr41AQcHq/sPq0c='}
-#       params = { :user => { :activated => false } }
-#       make_request(url, 'put', params, keys)
-#     end
-# end
 
 response = http_get(all_users_url, keys)
 user_id_array = parse(response)
