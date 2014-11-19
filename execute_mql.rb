@@ -4,6 +4,8 @@ require 'time'
 require 'api-auth'
 require 'json'
 
+URL = 'https://<instance name>.mingle-api.thoughtworks.com/api/v2/projects/test_project/cards/execute_mql.xml'
+OPTIONS = {:access_key_id => '<MINGLE USERNAME>', :access_secret_key => '<MINGLE HMAC KEY>'}
 PARAMS = {
   :mql => "SELECT Number, Name where Status = Done"
 }
