@@ -4,7 +4,7 @@ require 'time'
 require 'api-auth'
 require 'json'
 
-URL = 'https://<instance name>.mingle-api.thoughtworks.com/api/v2/projects/test_project/murmurs.xml'
+URL = 'https://<instance name>.mingle-api.thoughtworks.com/api/v2/projects/test_project/murmurs/1.xml'
 OPTIONS = {:access_key_id => '<MINGLE USERNAME>', :access_secret_key => '<MINGLE HMAC KEY>'}
 
 def http_get(url, options={})
