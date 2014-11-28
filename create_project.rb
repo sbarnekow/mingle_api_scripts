@@ -4,8 +4,8 @@ require 'time'
 require 'api-auth'
 require 'json'
 
-URL = 'https://sarahh.mingle-api.thoughtworks.com/api/v2/projects.xml'
-OPTIONS = {:access_key_id => 'sarah', :access_secret_key => 'JW8fmlWPknJBb60rLtH0fz1c2sSoHvPqTxLOe7gIDFk='}
+URL = 'https://<instance name>.mingle-api.thoughtworks.com/api/v2/projects.xml'
+OPTIONS = {:access_key_id => '<MINGLE USERNAME>', :access_secret_key => '<MINGLE HMAC KEY>'}
 PARAMS = { :project => { :name => 'Test Project 2', :identifier => 'test_project_2' }}
 
 def http_post(url, params, options={})
