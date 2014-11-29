@@ -26,8 +26,11 @@ def http_get(url, params, options={})
 
     body = params.to_json
 
+
     request = Net::HTTP::Get.new(uri.request_uri)
     request.body = body
+    request['Content-Type'] = 'application/json'
+    request['Content-Length'] = body.bytesize
 
     if options[:access_key_id]
       ApiAuth.sign!(request, options[:access_key_id], options[:access_secret_key])
@@ -35,9 +38,7 @@ def http_get(url, params, options={})
 
     response = http.request(request)
 
-    card = response.body
-
-    p card
+    puts response.body
 
     if response.code.to_i > 300
       raise StandardError, <<-ERROR
