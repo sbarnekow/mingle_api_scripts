@@ -5,7 +5,7 @@ require 'api-auth'
 require 'json'
 
 
-URL = 'https://sarahh.mingle-api.thoughtworks.com/api/v2/projects/test_project/property_definitions.xml'
+URL = 'https://<instance name>.mingle-api.thoughtworks.com/api/v2/projects/test_project/property_definitions.xml'
 OPTIONS = {:access_key_id => '<MINGLE USERNAME>', :access_secret_key => '<MINGLE HMAC KEY>'}
 PARAMS = {
   :property_definition => {
