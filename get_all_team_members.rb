@@ -39,7 +39,7 @@ def http_get(url, options={})
       Response Headers: #{response.to_hash.inspect}
       Response Body: #{response.body}
       ERROR
-  end
+    end
 end
 
 http_get(URL, OPTIONS)

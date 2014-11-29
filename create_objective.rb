@@ -40,7 +40,7 @@ def http_post(url, params, options={})
         Response Headers: #{response.to_hash.inspect}
         Response Body: #{response.body}
         ERROR
-  end
+    end
 end
 
 puts http_post(URL, PARAMS, OPTIONS)
