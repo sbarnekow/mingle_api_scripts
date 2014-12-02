@@ -6,40 +6,30 @@ require 'json'
 
 URL = 'https://<instance name>.mingle-api.thoughtworks.com/api/v2/projects/test_project/cards.xml'
 OPTIONS = {:access_key_id => '<MINGLE USERNAME>', :access_secret_key => '<MINGLE HMAC KEY>'}
-PARAMS = {:view => "New View"}
+PARAMS = { :view => "New View" }
 
 def http_get(url, params, options={})
     uri = URI.parse(url)
-    
     http = Net::HTTP.new(uri.host, uri.port)
-    
-    if uri.scheme == 'https'
-      http.use_ssl = true
-      if options[:skip_ssl_verify]
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      end
-    end
-
+    http.use_ssl = true
     request = Net::HTTP::Get.new(uri.request_uri)
-
-
-    if options[:access_key_id]
-      ApiAuth.sign!(request, options[:access_key_id], options[:access_secret_key])
-    end
+    
+    ApiAuth.sign!(request, options[:access_key_id], options[:access_secret_key])
 
     response = http.request(request)
-
     cards = response.body
 
-    puts cards
-
     if response.code.to_i > 300
-      raise UnexpectedResponseError, <<-ERROR
-      \nRequest URL: #{url}
-      Response: #{response.code} #{response.message}
-      Response Headers: #{response.to_hash.inspect}\nResponse Body: #{response.body}"
+      raise StandardError, <<-ERROR
+      Request URL: #{url}
+      Response: #{response.code}
+      Response Message: #{response.message}
+      Response Headers: #{response.to_hash.inspect}
+      Response Body: #{response.body}
       ERROR
-  end
+    end
+    
+    return cards 
 end
 
 http_get(URL, PARAMS, OPTIONS)
