@@ -1,4 +1,3 @@
-require 'net/http'
 require 'net/https'
 require 'time'
 require 'api-auth'
@@ -12,30 +11,32 @@ PARAMS = {
     } 
   }
 
-def http_post(url, params, options={})
-    uri = URI.parse(url)
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    body = params.to_json
+def http_put(url, params, options={})
+  uri = URI.parse(url)
+  http = Net::HTTP.new(uri.host, uri.port)
+  http.use_ssl = true
+  body = params.to_json
 
-    request = Net::HTTP::Put.new(uri.request_uri)
-    request.body = body
-    request['Content-Type'] = 'application/json'
-    request['Content-Length'] = body.bytesize
+  request = Net::HTTP::Put.new(uri.request_uri)
+  request.body = body
+  request['Content-Type'] = 'application/json'
+  request['Content-Length'] = body.bytesize
 
-    ApiAuth.sign!(request, options[:access_key_id], options[:access_secret_key])
+  ApiAuth.sign!(request, options[:access_key_id], options[:access_secret_key])
 
-    response = http.request(request)
+  card = http.request(request)
 
-    if response.code.to_i > 300
-      raise StandardError, <<-ERROR
-      Request URL: #{url}
-      Response: #{response.code}
-      Response Message: #{response.message}
-      Response Headers: #{response.to_hash.inspect}
-      Response Body: #{response.body}
-      ERROR
-    end
+  if response.code.to_i > 300
+    raise StandardError, <<-ERROR
+    Request URL: #{url}
+    Response: #{response.code}
+    Response Message: #{response.message}
+    Response Headers: #{response.to_hash.inspect}
+    Response Body: #{response.body}
+    ERROR
+  end
+
+  card
 end
 
-puts http_post(URL, PARAMS, OPTIONS)
+http_put(URL, PARAMS, OPTIONS)
