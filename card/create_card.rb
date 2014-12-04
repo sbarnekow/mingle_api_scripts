@@ -3,8 +3,8 @@ require 'time'
 require 'api-auth'
 require 'json'
 
-URL = 'https://sarahh.mingle-api.thoughtworks.com/api/v2/projects/test_project/cards.xml'
-OPTIONS = {:access_key_id => 'admin', :access_secret_key => 'uFD7AoGkdWgU2hMi5k185BiU4DFU0FSugO2HHOqgsXA='}
+URL = 'https://<instance name>.mingle-api.thoughtworks.com/api/v2/projects/test_project/cards.xml'
+OPTIONS = {:access_key_id => '<MINGLE USERNAME>', :access_secret_key => '<MINGLE HMAC KEY>'}
 PARAMS = { 
   :card => { 
     :type => "Story", :name => "Test Story Card" 
@@ -26,7 +26,7 @@ def http_post(url, params, options={})
 
   response = http.request(request)
   card = response.body
-  
+
   if response.code.to_i > 300
     raise StandardError, <<-ERROR
     Request URL: #{url}
