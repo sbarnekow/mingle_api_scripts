@@ -19,28 +19,19 @@ PARAMS = {
 def http_post(url, params, options={})
     uri = URI.parse(url)
     http = Net::HTTP.new(uri.host, uri.port)
-    if uri.scheme == 'https'
-      http.use_ssl = true
-      if options[:skip_ssl_verify]
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      end
-    end
+    http.use_ssl = true
 
     body = params.to_json
-
-    puts body
     
     request = Net::HTTP::Post.new(uri.request_uri)
+    
     request.body = body
-
     request['Content-Type'] = 'application/json'
     request['Content-Length'] = body.bytesize
 
-    if options[:access_key_id]
-      ApiAuth.sign!(request, options[:access_key_id], options[:access_secret_key])
-    end
+    ApiAuth.sign!(request, options[:access_key_id], options[:access_secret_key])
 
-    response = http.request(request)
+    card_property = http.request(request)
 
     if response.code.to_i > 300
       raise StandardError, <<-ERROR
@@ -48,7 +39,9 @@ def http_post(url, params, options={})
       Response: #{response.code} #{response.message}
       Response Headers: #{response.to_hash.inspect}\nResponse Body: #{response.body}
       ERROR
-  end
+    end
+
+    card_property
 end
 
-puts http_post(URL, PARAMS, OPTIONS)
+http_post(URL, PARAMS, OPTIONS)

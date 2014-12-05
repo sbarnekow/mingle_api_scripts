@@ -9,18 +9,10 @@ OPTIONS = {:access_key_id => '<MINGLE USERNAME>', :access_secret_key => '<MINGLE
 
 def http_get(url, options={})
     uri = URI.parse(url)
-    
     http = Net::HTTP.new(uri.host, uri.port)
-    
-    if uri.scheme == 'https'
-      http.use_ssl = true
-      if options[:skip_ssl_verify]
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      end
-    end
+    http.use_ssl = true
 
     request = Net::HTTP::Get.new(uri.request_uri)
-
 
     if options[:access_key_id]
       ApiAuth.sign!(request, options[:access_key_id], options[:access_secret_key])
@@ -28,9 +20,7 @@ def http_get(url, options={})
 
     response = http.request(request)
 
-    all_projects = response.body
-
-    puts all_projects
+    all_property_definitions = response.body
 
      if response.code.to_i > 300
       raise StandardError, <<-ERROR
@@ -40,7 +30,9 @@ def http_get(url, options={})
       Response Headers: #{response.to_hash.inspect}
       Response Body: #{response.body}
       ERROR
-  end
+    end
+
+    all_property_definitions
 end
 
 http_get(URL, OPTIONS)
