@@ -12,20 +12,10 @@ keys = {:access_key_id => '<MINGLE USERNAME>', :access_secret_key => '<MINGLE HM
 def http_get(url, keys={})
     uri = URI.parse(url)
     http = Net::HTTP.new(uri.host, uri.port)
-    
-    if uri.scheme == 'https'
-      http.use_ssl = true
-      if keys[:skip_ssl_verify]
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      end
-    end
+    http.use_ssl = true
 
     request = Net::HTTP::Get.new(uri.request_uri)
-
-    if keys[:access_key_id]
-      ApiAuth.sign!(request, keys[:access_key_id], keys[:access_secret_key])
-    end
-
+    ApiAuth.sign!(request, keys[:access_key_id], keys[:access_secret_key])
     response = http.request(request)
 
     if response.code.to_i > 300
@@ -60,39 +50,24 @@ def ask_for_id(user_arr)
 end
 
 def http_put(user_array)
-
   user_array.each do |user|
     url = 'https://<instance name>.mingle-api.thoughtworks.com/api/v2/users/' + user + '.xml'
     OPTIONS = {:access_key_id => '<MINGLE USERNAME>', :access_secret_key => '<MINGLE HMAC KEY>'}
-
 
     params = { :user => { :activated => false } }
 
     uri = URI.parse(url)
     http = Net::HTTP.new(uri.host, uri.port)
-    if uri.scheme == 'https'
-      http.use_ssl = true
-      if [:skip_ssl_verify]
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      end
-    end
-
+    http.use_ssl = true
     body = params.to_json
 
     request = Net::HTTP::Put.new(uri.request_uri)
     request.body = body
-
     request['Content-Type'] = 'application/json'
     request['Content-Length'] = body.bytesize
-
-
-    if keys[:access_key_id]
-      ApiAuth.sign!(request, keys[:access_key_id], keys[:access_secret_key])
-    end
-
+    ApiAuth.sign!(request, keys[:access_key_id], keys[:access_secret_key])
+    
     response = http.request(request)
-
-    p response.body
 
     if response.code.to_i > 300
         raise StandardError, <<-ERROR

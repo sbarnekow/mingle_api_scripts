@@ -11,26 +11,16 @@ PARAMS = {:user => { :activated => false } }
 def http_put(url, params, options={})
   uri = URI.parse(url)
   http = Net::HTTP.new(uri.host, uri.port)
-  if uri.scheme == 'https'
-    http.use_ssl = true
-    if options[:skip_ssl_verify]
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    end
-  end
+  http.use_ssl = true
   body = params.to_json
 
   request = Net::HTTP::Put.new(uri.request_uri)
   request.body = body
-
   request['Content-Type'] = 'application/json'
   request['Content-Length'] = body.bytesize
-
-
-  if options[:access_key_id]
-    ApiAuth.sign!(request, options[:access_key_id], options[:access_secret_key])
-  end
-
-  response = http.request(request)
+  ApiAuth.sign!(request, options[:access_key_id], options[:access_secret_key])
+  
+  user = http.request(request)
 
   if response.code.to_i > 300
       raise StandardError, <<-ERROR
@@ -41,8 +31,7 @@ def http_put(url, params, options={})
       Response Body: #{response.body}
       ERROR
   end
-
-  return response
+  user
 end
 
-puts http_put(URL, PARAMS, OPTIONS)
+ http_put(URL, PARAMS, OPTIONS)
