@@ -9,40 +9,33 @@ OPTIONS = {:access_key_id => '<MINGLE USERNAME>', :access_secret_key => '<MINGLE
 PARAMS = { :before_id => "41" }
 
 def http_get(url, options={}, params)
-    uri = URI.parse(url)
-    
-    http = Net::HTTP.new(uri.host, uri.port)
-    
-    if uri.scheme == 'https'
-      http.use_ssl = true
-      if options[:skip_ssl_verify]
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      end
-    end
+  uri = URI.parse(url)
+  http = Net::HTTP.new(uri.host, uri.port)
+  http.use_ssl = true
+  body = params.to_json
 
-    body = params.to_json
+  request = Net::HTTP::Get.new(uri.request_uri)
+  request.body = body
+  request['Content-Type'] = 'application/json'
+  request['Content-Length'] = body.bytesize
 
-    request = Net::HTTP::Get.new(uri.request_uri)
-    request.body = body
-    request['Content-Type'] = 'application/json'
-    request['Content-Length'] = body.bytesize
-    
-    if options[:access_key_id]
-      ApiAuth.sign!(request, options[:access_key_id], options[:access_secret_key])
-    end
+  ApiAuth.sign!(request, options[:access_key_id], options[:access_secret_key])
 
-    response = http.request(request)
+  response = http.request(request)
+  murmurs = response.body
 
-    if response.code.to_i > 300
-      raise StandardError, <<-ERROR
-      Request URL: #{url}
-      Response: #{response.code}
-      Response Message: #{response.message}
-      Response Headers: #{response.to_hash.inspect}
-      Request Body : #{request.body}
-      Response Body: #{response.body}
-      ERROR
+  if response.code.to_i > 300
+    raise StandardError, <<-ERROR
+    Request URL: #{url}
+    Response: #{response.code}
+    Response Message: #{response.message}
+    Response Headers: #{response.to_hash.inspect}
+    Response Body: #{response.body}
+    ERROR
   end
+
+  murmurs
+   
 end
 
 http_get(URL, OPTIONS, PARAMS)
