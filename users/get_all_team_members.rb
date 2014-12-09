@@ -16,6 +16,7 @@ def http_get(url, options={})
   ApiAuth.sign!(request, options[:access_key_id], options[:access_secret_key])
   response = http.request(request)
   team_members = response.body
+  
   if response.code.to_i > 300
     raise StandardError, <<-ERROR
     Request URL: #{url}
