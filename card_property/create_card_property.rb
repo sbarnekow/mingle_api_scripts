@@ -12,7 +12,7 @@ PARAMS = {
     :name => 'Story Status',
     :data_type => 'String',
     :is_managed => 'true',
-    :card_types => [{name: 'Story'}]
+    :card_types => [ {name: 'Story'} ]
   }
 }
 

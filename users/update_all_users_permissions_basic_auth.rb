@@ -27,8 +27,9 @@ def http_get(url, username, password)
     users_url = url + "/api/v2/users.xml"
     uri = URI.parse(users_url)
     http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
     request = Net::HTTP::Get.new(uri.request_uri)
-    request.basic_auth(username, password_
+    request.basic_auth(username, password)
     response = http.request(request)
     response
 end
@@ -38,6 +39,7 @@ def parse(response)
   user_ids = []
   xml.css('user').each {|user| user_ids << user.at_css('id').content }
   user_ids.sort!
+  p user_ids
 end
 
 def ask_for_id(user_arr)
@@ -53,16 +55,27 @@ def http_put(url, username, password, user_array)
 
     uri = URI.parse(concatenated_url)
     http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
     body = params.to_json
 
     request = Net::HTTP::Put.new(uri.request_uri)
-    p request.body
     request.body = body
     request['Content-Type'] = 'application/json'
     request['Content-Length'] = body.bytesize
+   
     request.basic_auth(username, password)
     response = http.request(request)
-    p response.body
+    p response 
+    # if response.code.to_i > 300
+    #   raise StandardError, <<-ERROR
+    #   Request URL: #{url}
+    #   Response: #{response.code}
+    #   Response Message: #{response.message}
+    #   Response Headers: #{response.to_hash.inspect}
+    #   Response Body: #{response.body}
+    #   ERROR
+    # end
+
   end
 end
 

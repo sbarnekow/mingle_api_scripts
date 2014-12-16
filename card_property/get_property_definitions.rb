@@ -13,10 +13,7 @@ def http_get(url, options={})
     http.use_ssl = true
 
     request = Net::HTTP::Get.new(uri.request_uri)
-
-    if options[:access_key_id]
-      ApiAuth.sign!(request, options[:access_key_id], options[:access_secret_key])
-    end
+    ApiAuth.sign!(request, options[:access_key_id], options[:access_secret_key])
 
     response = http.request(request)
 
