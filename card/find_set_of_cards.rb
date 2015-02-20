@@ -5,7 +5,7 @@ require 'json'
 
 URL = 'https://<instance name>.mingle-api.thoughtworks.com/api/v2/projects/test_project/cards.xml'
 OPTIONS = {:access_key_id => '<MINGLE USERNAME>', :access_secret_key => '<MINGLE HMAC KEY>'}
-PARAMS = { :view => "New View" }
+PARAMS = { :view => "<View Name>" }
 
 def http_get(url, params, options={})
   uri = URI.parse(url)
@@ -13,6 +13,11 @@ def http_get(url, params, options={})
   http.use_ssl = true
   request = Net::HTTP::Get.new(uri.request_uri)
   
+  body = params.to_json
+  request.body = body
+  request['Content-Type'] = 'application/json'
+  request['Content-Length'] = body.bytesize
+
   ApiAuth.sign!(request, options[:access_key_id], options[:access_secret_key])
 
   response = http.request(request)
@@ -28,7 +33,7 @@ def http_get(url, params, options={})
     ERROR
   end
   
-  cards 
+  p cards
 end
 
 http_get(URL, PARAMS, OPTIONS)
