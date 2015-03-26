@@ -4,11 +4,12 @@ require 'time'
 require 'api-auth'
 require 'json'
 
-URL = 'https://<instance name>.mingle-api.thoughtworks.com/api/v2/projects/test_project/feeds/events.xml'
-OPTIONS = {:access_key_id => '<MINGLE USERNAME>', :access_secret_key => '<MINGLE HMAC KEY>'}
+URL = 'https://<MINGLE INSTANCE NAME>.mingle-api.thoughtworks.com/api/v2/projects/<PROJECT NAME>/feeds/events.xml?page=3 rel="next"'
+
+OPTIONS = {:access_key_id => '<SIGN IN NAME>', :access_secret_key => '<TOKEN>'}
 
 def http_get(url, options={})
-  uri = URI.parse(url)
+  uri = URI.parse(URI.encode(url.strip))
   http = Net::HTTP.new(uri.host, uri.port)
   http.use_ssl = true
   request = Net::HTTP::Get.new(uri.request_uri)
@@ -28,7 +29,7 @@ def http_get(url, options={})
     ERROR
   end
 
-  events 
+  puts events 
 end
 
 http_get(URL, OPTIONS)
