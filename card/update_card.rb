@@ -24,19 +24,19 @@ def http_put(url, params, options={})
 
   ApiAuth.sign!(request, options[:access_key_id], options[:access_secret_key])
 
-  card = http.request(request)
-
-  if response.code.to_i > 300
-    raise StandardError, <<-ERROR
-    Request URL: #{url}
-    Response: #{response.code}
-    Response Message: #{response.message}
-    Response Headers: #{response.to_hash.inspect}
-    Response Body: #{response.body}
-    ERROR
+  response = http.request(request)
+    
+    if response.code.to_i > 300
+        raise StandardError, <<-ERROR
+        Request URL: #{url}
+        Response: #{response.code}
+        Response Message: #{response.message}
+        Response Headers: #{response.to_hash.inspect}
+        Response Body: #{response.body}
+        ERROR
+    end
+    response
   end
 
-  card
-end
 
 http_put(URL, PARAMS, OPTIONS)
